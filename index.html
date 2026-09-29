@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قصة حب محمد & أسيل ✨</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Libraries for particles, confetti & tilt -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #0d020a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .title-font {
+            font-family: 'Reem Kufi', sans-serif;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(255, 0, 85, 0.15);
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 15px rgba(255, 51, 102, 0.7), 0 0 30px rgba(255, 51, 102, 0.4);
+        }
+
+        .glow-btn {
+            background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+            box-shadow: 0 0 20px rgba(255, 8, 68, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .glow-btn:hover {
+            box-shadow: 0 0 35px rgba(255, 8, 68, 0.8);
+            transform: translateY(-2px);
+        }
+
+        /* Audio Wave Visualizer Simulation */
+        .wave-bar {
+            width: 4px;
+            height: 18px;
+            background: #ff3366;
+            border-radius: 2px;
+            animation: pulse 1s infinite ease-in-out;
+        }
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.1s; }
+
+        @keyframes pulse {
+            0%, 100% { height: 6px; }
+            50% { height: 24px; }
+        }
+
+        .paused .wave-bar {
+            animation-play-state: paused;
+            height: 4px;
+        }
+
+        /* Scratch Canvas overlay */
+        .scratch-container {
+            position: relative;
+            user-select: none;
+        }
+        .scratch-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 1rem;
+            cursor: pointer;
+            z-index: 10;
+            touch-action: none;
+        }
+
+        /* Particles container fixed */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col items-center justify-between selection:bg-pink-500 selection:text-white">
+
+    <!-- Interactive Background Particles -->
+    <div id="particles-js"></div>
+
+    <!-- 1. LOCK SCREEN SECTION -->
+    <section id="lockScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0208]/90 backdrop-blur-xl transition-all duration-700">
+        <div class="glass-card max-w-md w-full p-8 rounded-3xl text-center space-y-6 border border-pink-500/20" data-tilt>
+            <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-pink-500 to-rose-600 rounded-full flex items-center justify-center shadow-lg shadow-pink-500/30 animate-pulse">
+                <i class="fa-solid fa-heart text-3xl text-white"></i>
+            </div>
+            
+            <div>
+                <h1 class="title-font text-3xl font-bold text-white mb-2">محمد & أسيل ✨</h1>
+                <p class="text-pink-300/80 text-sm">✨ Mohamed & Aseel Eternal Love ✨</p>
+            </div>
+
+            <div class="space-y-4">
+                <p class="text-xs text-gray-300">أدخلي كلمة السر لمشاهدة المفاجأة 💖</p>
+                <input type="password" id="passInput" placeholder="كلمة السر..." class="glass-input w-full px-4 py-3 rounded-2xl text-center text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all text-lg tracking-widest" onkeydown="if(event.key === 'Enter') checkPass()">
+                <p id="errorMsg" class="text-xs text-red-400 hidden">كلمة السر خاطئة! جربي كلمة السر الخاصة بينا 😉</p>
+                <button onclick="checkPass()" class="glow-btn w-full py-3.5 rounded-2xl font-bold text-white text-lg tracking-wide flex items-center justify-center gap-2">
+                    <span>افتحي قلبي</span>
+                    <i class="fa-solid fa-key text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT (Hidden until password entered) -->
+    <main id="mainContent" class="relative z-10 w-full max-w-lg mx-auto px-4 py-8 space-y-8 hidden">
+
+        <!-- HEADER / TITLE -->
+        <header class="text-center space-y-3 pt-4">
+            <div class="inline-block px-4 py-1.5 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-300 text-xs font-semibold mb-1">
+                💖 حكاية محمد وأسيل
+            </div>
+            <h1 class="title-font text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-rose-300 to-pink-500 glow-text">
+                كل لحظة معاكي يا أسيل هي عمر جديد
+            </h1>
+            <p class="text-gray-400 text-sm">منذ أول ثانية تلاقت فيها أرواحنا ✨</p>
+        </header>
+
+        <!-- COUPLE HERO PHOTO SECTION -->
+        <section class="glass-card p-3 rounded-3xl space-y-2 border border-pink-500/30" data-tilt>
+            <div class="w-full rounded-2xl overflow-hidden relative shadow-2xl flex items-center justify-center bg-black/20">
+                <!-- Dɔn fiks di image fɔ sho all wit object-contain -->
+                <img src="love.jpg.jpeg" class="w-full max-h-[450px] object-contain transform hover:scale-105 transition-transform duration-700" alt="صورة محمد وأسيل">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-center pb-4 pointer-events-none">
+                    <span class="text-sm font-bold text-pink-200 tracking-wide bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10">
+                        محمد & أسيل.. أجمل حكاية ❤️
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIVE TIMER CARD -->
+        <section class="glass-card p-6 rounded-3xl text-center relative overflow-hidden" data-tilt>
+            <div class="absolute -right-10 -top-10 w-32 h-32 bg-pink-600/10 rounded-full blur-2xl"></div>
+            <h2 class="text-sm font-semibold text-pink-300 mb-4 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-hourglass-half text-pink-400"></i>
+                <span>منذ أن بدأت قصتنا (15/06/2026)</span>
+            </h2>
+
+            <div class="grid grid-cols-3 gap-3 text-center">
+                <div class="bg-black/30 p-3 rounded-2xl border border-white/5">
+                    <span id="years" class="block text-2xl font-bold text-pink-400">0</span>
+                    <span class="text-[11px] text-gray-400">سنة</span>
+                </div>
+                <div class="bg-black/30 p-3 rounded-2xl border border-white/5">
+                    <span id="months" class="block text-2xl font-bold text-pink-400">0</span>
+                    <span class="text-[11px] text-gray-400">شهر</span>
+                </div>
+                <div class="bg-black/30 p-3 rounded-2xl border border-white/5">
+                    <span id="days" class="block text-2xl font-bold text-pink-400">0</span>
+                    <span class="text-[11px] text-gray-400">يوم</span>
+                </div>
+                <div class="bg-black/30 p-3 rounded-2xl border border-white/5">
+                    <span id="hours" class="block text-2xl font-bold text-pink-400">0</span>
+                    <span class="text-[11px] text-gray-400">ساعة</span>
+                </div>
+                <div class="bg-black/30 p-3 rounded-2xl border border-white/5">
+                    <span id="minutes" class="block text-2xl font-bold text-pink-400">0</span>
+                    <span class="text-[11px] text-gray-400">دقيقة</span>
+                </div>
+                <div class="bg-black/30 p-3 rounded-2xl border border-white/5">
+                    <span id="seconds" class="block text-2xl font-bold text-pink-400">0</span>
+                    <span class="text-[11px] text-gray-400">ثانية</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CINEMATIC MUSIC PLAYER -->
+        <section class="glass-card p-4 rounded-2xl flex items-center justify-between border border-pink-500/20">
+            <div class="flex items-center gap-3">
+                <button id="playBtn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-rose-600 flex items-center justify-center text-white text-lg shadow-lg shadow-pink-500/40 hover:scale-105 transition-transform">
+                    <i id="playIcon" class="fa-solid fa-play ml-0.5"></i>
+                </button>
+                <div>
+                    <h3 class="font-bold text-sm text-white">ونس كل حياتي ✨</h3>
+                    <p class="text-xs text-pink-300/70">إليسا 🎵</p>
+                </div>
+            </div>
+
+            <!-- Wavebar Animation -->
+            <div id="waveVisualizer" class="flex items-end gap-1 px-3 paused">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+
+            <audio id="bgMusic" loop src="song.mp3.mpeg"></audio>
+        </section>
+
+        <!-- SCRATCH CARDS (SURPRISE REVEAL) -->
+        <section class="space-y-3">
+            <h2 class="text-xs font-bold text-pink-300 uppercase tracking-widest text-center">كروت المفاجآت ( اكشطي للرؤية 🪄 )</h2>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Scratch Card 1 -->
+                <div class="scratch-container glass-card rounded-2xl p-4 min-h-[120px] flex flex-col items-center justify-center text-center">
+                    <i class="fa-solid fa-crown text-amber-400 text-2xl mb-2"></i>
+                    <p class="text-sm font-bold text-white">ملكة قلب محمد للأبد 💍</p>
+                    <canvas id="scratch1" class="scratch-canvas"></canvas>
+                </div>
+
+                <!-- Scratch Card 2 -->
+                <div class="scratch-container glass-card rounded-2xl p-4 min-h-[120px] flex flex-col items-center justify-center text-center">
+                    <i class="fa-solid fa-face-smile-beam text-pink-400 text-2xl mb-2"></i>
+                    <p class="text-sm font-bold text-white">ضحكة أسيل هي حياتي ✨</p>
+                    <canvas id="scratch2" class="scratch-canvas"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEMORY TIMELINE / GALLERY -->
+        <section class="space-y-4">
+            <h2 class="text-xs font-bold text-pink-300 uppercase tracking-widest text-center">ذكرياتنا الجميلة 📸</h2>
+            
+            <div class="space-y-4">
+                <!-- Memory Item 1 -->
+                <div class="glass-card p-3 rounded-2xl space-y-2" data-tilt>
+                    <div class="h-48 w-full rounded-xl overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500" alt="ذكريات">
+                        <div class="absolute bottom-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] text-pink-300 border border-white/10">
+                            أحلى صدفة في عمري ❤
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Memory Item 2 -->
+                <div class="glass-card p-3 rounded-2xl space-y-2" data-tilt>
+                    <div class="h-48 w-full rounded-xl overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500" alt="ذكريات">
+                        <div class="absolute bottom-2 right-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] text-pink-300 border border-white/10">
+                            عالمي الخاص بيكي 🌊
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECRET LETTER BUTTON -->
+        <section class="pt-4 text-center">
+            <button onclick="openModal()" class="glow-btn px-8 py-4 rounded-2xl font-bold text-white text-base shadow-xl flex items-center justify-center gap-3 mx-auto">
+                <i class="fa-solid fa-envelope-open-text text-lg"></i>
+                <span>رسالة من محمد لـ أسيل 🎁</span>
+            </button>
+        </section>
+
+    </main>
+
+    <!-- SECRET POPUP MODAL -->
+    <div id="secretModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0">
+        <div class="glass-card max-w-lg w-full p-6 sm:p-8 rounded-3xl relative border border-pink-500/30 text-center space-y-4 max-h-[85vh] overflow-y-auto">
+            <button onclick="closeModal()" class="absolute top-4 left-4 text-gray-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="w-16 h-16 mx-auto bg-pink-500/20 rounded-full flex items-center justify-center text-pink-400 text-2xl mb-2">
+                <i class="fa-solid fa-heart"></i>
+            </div>
+
+            <h3 class="title-font text-2xl font-bold text-pink-400">أميرتي أسيل.. ❤️</h3>
+
+            <div class="text-sm text-gray-200 leading-relaxed text-right bg-black/20 p-4 rounded-2xl border border-white/5 space-y-3">
+                <p>عايز أقولك إن كل كلمة كتبتها هنا وكل صورة حطيتها هي جزء صغير جداً من اللي حاسه بيكي.</p>
+                <p>إنتي مش بس حبيبتي، إنتي بنتي وصاحبتي وأماني. هفضل دايماً جنبك، وهيفضل حبنا بيكبر كل يوم عن اللي قبله.</p>
+                <p>ربنا يخليكي ليا يا أغلى من عمري ❤️</p>
+            </div>
+
+            <p class="title-font text-lg text-pink-300 font-bold">بحبك للأبد - محمد 💍</p>
+
+            <button onclick="closeModal()" class="w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm transition-colors">
+                العودة للبداية 🌸
+            </button>
+        </div>
+    </div>
+
+    <!-- SCRIPT SECTION -->
+    <script>
+        // Password Setup
+        const SECRET_PASSWORD = "بحبك";
+
+        // Start date for timer
+        const startDate = new Date(2026, 5, 15, 0, 0, 0); 
+
+        // Password Logic
+        function checkPass() {
+            const pass = document.getElementById('passInput').value.trim();
+            if (pass === SECRET_PASSWORD) {
+                document.getElementById('lockScreen').classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => {
+                    document.getElementById('lockScreen').style.display = 'none';
+                    document.getElementById('mainContent').classList.remove('hidden');
+                    triggerConfetti();
+                }, 500);
+            } else {
+                document.getElementById('errorMsg').classList.remove('hidden');
+            }
+        }
+
+        // Live Counter Logic
+        function updateCounter() {
+            const now = new Date();
+            let diff = now - startDate;
+
+            if (diff < 0) diff = 0;
+
+            const seconds = Math.floor((diff / 1000) % 60);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            
+            const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const years = Math.floor(totalDays / 365);
+            const months = Math.floor((totalDays % 365) / 30);
+            const days = Math.floor((totalDays % 365) % 30);
+
+            document.getElementById('years').innerText = years;
+            document.getElementById('months').innerText = months;
+            document.getElementById('days').innerText = days;
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+        }
+        setInterval(updateCounter, 1000);
+        updateCounter();
+
+        // Audio Player Toggle
+        const audio = document.getElementById('bgMusic');
+        const playIcon = document.getElementById('playIcon');
+        const waveVisualizer = document.getElementById('waveVisualizer');
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                playIcon.className = 'fa-solid fa-pause';
+                waveVisualizer.classList.remove('paused');
+            } else {
+                audio.pause();
+                playIcon.className = 'fa-solid fa-play ml-0.5';
+                waveVisualizer.classList.add('paused');
+            }
+        }
+
+        // Modal Logic
+        function openModal() {
+            const modal = document.getElementById('secretModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            triggerConfetti();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('secretModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // Confetti Effect
+        function triggerConfetti() {
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff3366', '#ff80ab', '#ffffff']
+            });
+        }
+
+        // Scratch Card Canvas Initializer
+        function setupScratchCard(canvasId, textCover) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const parent = canvas.parentElement;
+
+            canvas.width = parent.offsetWidth;
+            canvas.height = parent.offsetHeight;
+
+            ctx.fillStyle = '#1e1022';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ff3366';
+            ctx.font = 'bold 14px Cairo';
+            ctx.textAlign = 'center';
+            ctx.fillText(textCover, canvas.width / 2, canvas.height / 2 + 5);
+
+            let isDrawing = false;
+
+            function scratch(e) {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
+
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(x, y, 18, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            canvas.addEventListener('mousedown', () => isDrawing = true);
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+            canvas.addEventListener('mousemove', scratch);
+
+            canvas.addEventListener('touchstart', (e) => {
+                isDrawing = true;
+                scratch(e);
+            });
+            canvas.addEventListener('touchend', () => isDrawing = false);
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                scratch(e);
+            });
+        }
+
+        window.addEventListener('load', () => {
+            setupScratchCard('scratch1', 'اكشطي هنا 🪄');
+            setupScratchCard('scratch2', 'افتحي السر ✨');
+
+            // Initialize VanillaTilt for elements
+            VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+                max: 10,
+                speed: 400,
+                glare: true,
+                "max-glare": 0.2,
+            });
+            
+            // Particles Config
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 40 },
+                    color: { value: '#ff3366' },
+                    shape: { type: 'circle' },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 4, random: true },
+                    move: { enable: true, speed: 1.5, direction: 'top', random: true }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

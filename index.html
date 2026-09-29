@@ -160,8 +160,7 @@
         <!-- COUPLE HERO PHOTO SECTION -->
         <section class="glass-card p-3 rounded-3xl space-y-2 border border-pink-500/30" data-tilt>
             <div class="w-full rounded-2xl overflow-hidden relative shadow-2xl flex items-center justify-center bg-black/20">
-                <!-- Dɔn fiks di image fɔ sho all wit object-contain -->
-                <img src="love.jpg.jpeg" class="w-full max-h-[450px] object-contain transform hover:scale-105 transition-transform duration-700" alt="صورة محمد وأسيل">
+                <img src="love.jpg" class="w-full max-h-[450px] object-contain transform hover:scale-105 transition-transform duration-700" alt="صورة محمد وأسيل">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end justify-center pb-4 pointer-events-none">
                     <span class="text-sm font-bold text-pink-200 tracking-wide bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10">
                         محمد & أسيل.. أجمل حكاية ❤️
@@ -226,7 +225,7 @@
                 <div class="wave-bar"></div>
             </div>
 
-            <audio id="bgMusic" loop src="song.mp3.mpeg"></audio>
+            <audio id="bgMusic" loop src="song.mp3"></audio>
         </section>
 
         <!-- SCRATCH CARDS (SURPRISE REVEAL) -->
@@ -331,6 +330,14 @@
                     document.getElementById('lockScreen').style.display = 'none';
                     document.getElementById('mainContent').classList.remove('hidden');
                     triggerConfetti();
+                    
+                    // Play audio automatically after successful login
+                    audio.play().then(() => {
+                        playIcon.className = 'fa-solid fa-pause';
+                        waveVisualizer.classList.remove('paused');
+                    }).catch(err => {
+                        console.log("Autoplay blocked or audio error:", err);
+                    });
                 }, 500);
             } else {
                 document.getElementById('errorMsg').classList.remove('hidden');
